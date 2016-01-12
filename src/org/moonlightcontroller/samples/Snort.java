@@ -20,10 +20,13 @@ import org.moonlightcontroller.blocks.HeaderClassifier.HeaderClassifierRule;
 import org.moonlightcontroller.blocks.RegexClassifier;
 import org.moonlightcontroller.blocks.ToDevice;
 import org.moonlightcontroller.blocks.ToDump;
+import org.moonlightcontroller.events.IAlertListener;
 // import org.moonlightcontroller.blocks.ToDevice;
 import org.moonlightcontroller.events.IHandleClient;
 import org.moonlightcontroller.events.IInstanceUpListener;
+import org.moonlightcontroller.events.InstanceAlertArgs;
 import org.moonlightcontroller.events.InstanceUpArgs;
+import org.moonlightcontroller.managers.models.messages.AlertMessage;
 import org.moonlightcontroller.processing.Connector;
 import org.moonlightcontroller.processing.IConnector;
 import org.moonlightcontroller.processing.IProcessingBlock;
@@ -101,6 +104,15 @@ public class Snort extends BoxApplication{
 		
 		this.setStatements(createStatements());
 		this.setInstanceUpListener(new InstanceUpHandler());
+		this.setAlertListener(new IAlertListener() {
+			
+			@Override
+			public void Handle(InstanceAlertArgs args) {
+				for (AlertMessage a : args.getAlert().getMessages()) {
+					LOG.info(a.toString());
+				}
+			}
+		});
 	}
 	
 	@Override
